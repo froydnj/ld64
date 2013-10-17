@@ -612,12 +612,16 @@ static void printTime(const char* msg, uint64_t partTime, uint64_t totalTime)
 
 static void getVMInfo(vm_statistics_data_t& info)
 {
+#if defined(__MACH__)
 	mach_msg_type_number_t count = sizeof(vm_statistics_data_t) / sizeof(natural_t);
 	kern_return_t error = host_statistics(mach_host_self(), HOST_VM_INFO,
 							(host_info_t)&info, &count);
 	if (error != KERN_SUCCESS) {
 		bzero(&info, sizeof(vm_statistics_data_t));
 	}
+#else
+	bzero(&info, sizeof(vm_statistics_data_t));
+#endif /* __MACH__ */
 }
 
 
