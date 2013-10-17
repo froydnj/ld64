@@ -690,7 +690,9 @@ int main(int argc, const char* argv[])
 		state.markAtomsOrdered();
 		ld::passes::branch_shim::doPass(options, state);	// must be after stubs 
 		ld::passes::branch_island::doPass(options, state);	// must be after stubs and order pass
+#if defined(__MACH__)
 		ld::passes::dtrace::doPass(options, state);
+#endif /* __MACH__ */
 		ld::passes::compact_unwind::doPass(options, state);  // must be after order pass
  		
 		// sort final sections
