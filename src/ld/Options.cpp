@@ -1893,9 +1893,11 @@ void Options::parse(int argc, const char* argv[])
                 snapshotFileArgIndex = 1;
 				parseOrderFile(argv[++i], false);
 			}
+#ifdef GENUINE_MACH
 			else if ( strcmp(arg, "-order_file_statistics") == 0 ) {
 				fPrintOrderFileStatistics = true;
 			}
+#endif /* GENUINE_MACH */
 			// ??? Deprecate segcreate.
 			// -sectcreate puts whole files into a section in the output.
 			else if ( (strcmp(arg, "-sectcreate") == 0) || (strcmp(arg, "-segcreate") == 0) ) {
@@ -2445,9 +2447,11 @@ void Options::parse(int argc, const char* argv[])
 			else if ( strcmp(arg, "-pause") == 0 ) {
 				fPause = true;
 			}
+#ifdef GENUINE_MACH
 			else if ( strcmp(arg, "-print_statistics") == 0 ) {
 				fStatistics = true;
 			}
+#endif /* GENUINE_MACH */
 			else if ( strcmp(arg, "-d") == 0 ) {
 				fMakeTentativeDefinitionsReal = true;
 			}
@@ -3053,8 +3057,10 @@ void Options::parsePreCommandLineEnvironmentSettings()
 	if (fTraceDylibs || fTraceArchives)
 		fTraceOutputFile = getenv("LD_TRACE_FILE");
 
+#ifdef GENUINE_MACH
 	if (getenv("LD_PRINT_ORDER_FILE_STATISTICS") != NULL)
 		fPrintOrderFileStatistics = true;
+#endif /* GENUINE_MACH */
 
 	if (getenv("LD_SPLITSEGS_NEW_LIBRARIES") != NULL)
 		fSplitSegs = true;
