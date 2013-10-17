@@ -45,5 +45,9 @@ extern ld::archive::File* parse(const uint8_t* fileContent, uint64_t fileLength,
 
 } // namespace archive
 
+/* From cctools/include/stuff/ofile.h */
+#ifndef AR_EFMT1
+#define AR_EFMT1 "#1/"
+#endif
 
 #endif // __ARCHIVE_FILE_H__
