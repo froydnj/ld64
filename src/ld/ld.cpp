@@ -45,7 +45,6 @@ extern "C" double log2 ( double );
 #include <dlfcn.h>
 #include <mach-o/dyld.h>
 #include <dlfcn.h>
-#include <AvailabilityMacros.h>
 
 #include <string>
 #include <map>
