@@ -800,10 +800,8 @@ static void copyFile(const char* srcFile, const char* dstFile)
 	const uint32_t kBufferSize = 128*1024;
 	static uint8_t* buffer = NULL;
 	if ( buffer == NULL ) {
-		vm_address_t addr = 0;
-		if ( vm_allocate(mach_task_self(), &addr, kBufferSize, true /*find range*/) == KERN_SUCCESS )
-			buffer = (uint8_t*)addr;
-		else
+		buffer = (uint8_t*)malloc(kBufferSize);
+		if (!buffer)
 			throw "can't allcoate copy buffer";
 	}
 	while ( (len = read(src, buffer, kBufferSize)) > 0 ) {
