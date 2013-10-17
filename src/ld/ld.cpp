@@ -21,11 +21,13 @@
  *
  * @APPLE_LICENSE_HEADER_END@
  */
- 
+
+#if defined(__MACH__) 
 // start temp HACK for cross builds
 extern "C" double log2 ( double );
 //#define __MATH__
 // end temp HACK for cross builds
+#endif
 
 
 #include <stdlib.h>
