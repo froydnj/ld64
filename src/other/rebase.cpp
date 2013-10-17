@@ -784,7 +784,9 @@ static void copyFile(const char* srcFile, const char* dstFile)
 		throwf("can't create temp file %s, errnor=%d", dstFile, errno);
 
 	// mark source as "don't cache"
+#ifdef F_NOCACHE
 	(void)fcntl(src, F_NOCACHE, 1);
+#endif
 	// we want to cache the dst because we are about to map it in and modify it
 	
 	// copy permission bits
