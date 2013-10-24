@@ -39,6 +39,13 @@
 #include "MachOFileAbstraction.hpp"
 #include "code-sign-blobs/superblob.h"
 
+// Constants from the xnu headers.
+#define DICE_KIND_DATA				0x0001
+#define DICE_KIND_JUMP_TABLE8		0x0002
+#define DICE_KIND_JUMP_TABLE16		0x0003
+#define DICE_KIND_JUMP_TABLE32		0x0004
+#define DICE_KIND_ABS_JUMP_TABLE32	0x0005
+
 namespace ld {
 namespace tool {
 
