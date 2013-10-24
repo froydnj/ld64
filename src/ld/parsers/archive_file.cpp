@@ -28,6 +28,7 @@
 #include <sys/param.h>
 #include <mach-o/ranlib.h>
 #include <ar.h>
+#include <stdarg.h>
 
 #include <vector>
 #include <set>

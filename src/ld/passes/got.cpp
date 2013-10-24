@@ -27,7 +27,9 @@
 #include <math.h>
 #include <unistd.h>
 #include <dlfcn.h>
+#include <stdio.h>
 
+#include <algorithm>
 #include <vector>
 #include <map>
 

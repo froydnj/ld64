@@ -27,6 +27,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <dlfcn.h>
+#include <stdio.h>
 #include <mach/machine.h>
 #include <mach-o/compact_unwind_encoding.h>
 

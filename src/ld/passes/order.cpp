@@ -27,8 +27,10 @@
 #include <math.h>
 #include <unistd.h>
 #include <dlfcn.h>
+#include <stdio.h>
 #include <mach/machine.h>
 
+#include <algorithm>
 #include <vector>
 #include <map>
 #include <unordered_map>

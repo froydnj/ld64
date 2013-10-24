@@ -28,8 +28,10 @@
 #include <math.h>
 #include <unistd.h>
 #include <assert.h>
+#include <stdio.h>
 #include <libkern/OSByteOrder.h>
 
+#include <algorithm>
 #include <vector>
 #include <set>
 #include <map>
