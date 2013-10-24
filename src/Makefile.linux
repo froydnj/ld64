@@ -41,6 +41,7 @@ CXXFILES_src_ld_parsers := \
 
 CFILES_src_linux_compat := \
   linux-compat/clock.c \
+  linux-compat/md5.c \
   linux-compat/strlcat.c \
   linux-compat/strlcpy.c \
   $(NULL)
