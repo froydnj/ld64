@@ -43,6 +43,7 @@
 #include "libunwind.h"
 #include "InternalMacros.h"
 #include "dwarf2.h"
+#include "strlcpycat.h"
 
 
 #if 0

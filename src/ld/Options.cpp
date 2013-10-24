@@ -41,6 +41,7 @@
 #include "Architectures.hpp"
 #include "MachOFileAbstraction.hpp"
 #include "Snapshot.h"
+#include "strlcpycat.h"
 
 // upward dependency on lto::version()
 namespace lto {

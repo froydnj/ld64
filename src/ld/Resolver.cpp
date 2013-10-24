@@ -57,6 +57,7 @@
 #include "SymbolTable.h"
 #include "Resolver.h"
 #include "parsers/lto_file.h"
+#include "strlcpycat.h"
 
 
 namespace ld {
