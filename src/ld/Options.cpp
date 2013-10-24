@@ -1810,13 +1810,13 @@ void Options::parse(int argc, const char* argv[])
 			else if ( strcmp(arg, "-kext") == 0 ) {
 				fOutputKind = kKextBundle;
 			}
-#if defined(__MACH__)
 			else if ( strcmp(arg, "-o") == 0 ) {
                 snapshotArgCount = 0;
 				fOutputFile = argv[++i];
+#if defined(__MACH__)
                 fLinkSnapshot.setSnapshotName(fOutputFile);
-			}
 #endif
+			}
 			else if ( strncmp(arg, "-lazy-l", 7) == 0 ) {
                 snapshotArgCount = 0;
 				FileInfo info = findLibrary(&arg[7], true);
