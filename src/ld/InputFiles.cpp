@@ -282,8 +282,8 @@ ld::File* InputFiles::makeFile(const Options::FileInfo& info, bool indirectDylib
 	objOpts.subType				= _options.subArchitecture();
 	ld::relocatable::File* objResult = mach_o::relocatable::parse(p, len, info.path, info.modTime, info.ordinal, objOpts);
 	if ( objResult != NULL ) {
-		OSAtomicAdd64(len, &_totalObjectSize);
-		OSAtomicIncrement32(&_totalObjectLoaded);
+		__sync_fetch_and_add(&_totalObjectSize, len);
+		__sync_fetch_and_add(&_totalObjectLoaded, 1);
 		return objResult;
 	}
 
@@ -291,8 +291,8 @@ ld::File* InputFiles::makeFile(const Options::FileInfo& info, bool indirectDylib
 #if defined(__MACH__)
 	objResult = lto::parse(p, len, info.path, info.modTime, info.ordinal, _options.architecture(), _options.subArchitecture(), _options.logAllFiles());
 	if ( objResult != NULL ) {
-		OSAtomicAdd64(len, &_totalObjectSize);
-		OSAtomicIncrement32(&_totalObjectLoaded);
+		__sync_fetch_and_add(&_totalObjectSize, len);
+		__sync_fetch_and_add(&_totalObjectLoaded, 1);
 		return objResult;
 	}
 #endif
@@ -314,8 +314,8 @@ ld::File* InputFiles::makeFile(const Options::FileInfo& info, bool indirectDylib
 	archOpts.logAllFiles			= _options.logAllFiles();
 	ld::archive::File* archiveResult = ::archive::parse(p, len, info.path, info.modTime, info.ordinal, archOpts);
 	if ( archiveResult != NULL ) {
-		OSAtomicAdd64(len, &_totalArchiveSize);
-		OSAtomicIncrement32(&_totalArchivesLoaded);
+		__sync_fetch_and_add(&_totalArchiveSize, len);
+		__sync_fetch_and_add(&_totalArchivesLoaded, 1);
 		return archiveResult;
 	}
 	
