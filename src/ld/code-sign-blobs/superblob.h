@@ -6,6 +6,7 @@
 
 #include "blob.h"
 #include <assert.h>
+#include <stdarg.h>
 #include <utility>
 #include <map>
 
