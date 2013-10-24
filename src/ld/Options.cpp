@@ -34,6 +34,10 @@
 #include <spawn.h>
 #include <cxxabi.h>
 #include <Availability.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <limits.h>
+#include <stdarg.h>
 
 #include <vector>
 
