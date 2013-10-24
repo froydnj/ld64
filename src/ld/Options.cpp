@@ -52,6 +52,8 @@ namespace lto {
 	extern const char* version();
 }
 
+static const char ldVersionString[] = "ld64-136, modified for Linux hosting";
+
 // magic to place command line in crash reports
 const int crashreporterBufferSize = 2000;
 static char crashreporterBuffer[crashreporterBufferSize];
@@ -2911,7 +2913,6 @@ void Options::buildSearchPaths(int argc, const char* argv[])
 			addStandardLibraryDirectories = false;
 		else if ( strcmp(argv[i], "-v") == 0 ) {
 			fVerbose = true;
-			extern const char ldVersionString[];
 			fprintf(stderr, "%s", ldVersionString);
 			fprintf(stderr, "configured to support archs: %s\n", ALL_SUPPORTED_ARCHS);
 			 // if only -v specified, exit cleanly
