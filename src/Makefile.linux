@@ -98,7 +98,7 @@ CXXFLAGS := $(CFLAGS) -std=c++0x
 all: ld64 rebase
 
 ld64: $(OBJS_ld)
-	$(CXX) -o $@ $^ -pthread
+	$(CXX) -o $@ $^ -pthread -luuid
 
 rebase: $(CCOBJS_rebase)
 	$(CXX) -o $@ $^
