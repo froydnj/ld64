@@ -181,7 +181,10 @@ const char* InputFiles::fileArch(const uint8_t* p, unsigned len)
 	const char* result = mach_o::relocatable::archName(p);
 	if ( result != NULL  )
 		 return result;
-		 
+
+#if !defined(__MACH__)
+	return NULL;
+#else
 	result = lto::archName(p, len);
 	if ( result != NULL  )
 		 return result;
@@ -198,6 +201,7 @@ const char* InputFiles::fileArch(const uint8_t* p, unsigned len)
 	}
 	strcat(unsupported, " )");
 	return unsupported;
+#endif
 }
 
 
@@ -284,12 +288,14 @@ ld::File* InputFiles::makeFile(const Options::FileInfo& info, bool indirectDylib
 	}
 
 	// see if it is an llvm object file
+#if defined(__MACH__)
 	objResult = lto::parse(p, len, info.path, info.modTime, info.ordinal, _options.architecture(), _options.subArchitecture(), _options.logAllFiles());
 	if ( objResult != NULL ) {
 		OSAtomicAdd64(len, &_totalObjectSize);
 		OSAtomicIncrement32(&_totalObjectLoaded);
 		return objResult;
 	}
+#endif
 	
 	// see if it is a dynamic library
 	ld::dylib::File* dylibResult = mach_o::dylib::parse(p, len, info.path, info.modTime, _options, info.ordinal, info.options.fBundleLoader, indirectDylib);
@@ -314,6 +320,7 @@ ld::File* InputFiles::makeFile(const Options::FileInfo& info, bool indirectDylib
 	}
 	
 	// does not seem to be any valid linker input file, check LTO misconfiguration problems
+#if defined(__MACH__)
 	if ( lto::archName((uint8_t*)p, len) != NULL ) {
 		if ( lto::libLTOisLoaded() ) {
 			throwf("lto file was built for %s which is not the architecture being linked (%s): %s", fileArch(p, len), _options.architectureName(), info.path);
@@ -340,6 +347,7 @@ ld::File* InputFiles::makeFile(const Options::FileInfo& info, bool indirectDylib
 			throwf("could not process llvm bitcode object file, because %s could not be loaded", libLTO);
 		}
 	}
+#endif
 
 	// error handling
 	if ( ((fat_header*)p)->magic == OSSwapBigToHostInt32(FAT_MAGIC) ) {

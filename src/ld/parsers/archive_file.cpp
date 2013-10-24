@@ -235,7 +235,11 @@ bool File<A>::validMachOFile(const uint8_t* fileContent, uint64_t fileLength, co
 template <typename A>
 bool File<A>::validLTOFile(const uint8_t* fileContent, uint64_t fileLength, const mach_o::relocatable::ParserOptions& opts)
 {
+#if !defined(__MACH__)
+	return false;
+#else
 	return lto::isObjectFile(fileContent, fileLength, opts.architecture, opts.subType);
+#endif
 }
 
 
@@ -378,6 +382,7 @@ typename File<A>::MemberState& File<A>::makeObjectFileForMember(const Entry* mem
 			_instantiatedEntries[member] = state;
 			return _instantiatedEntries[member];
 		}
+#if defined(__MACH__)
 		// see if member is llvm bitcode file
 		result = lto::parse(member->content(), member->contentSize(), 
 								mPath, member->modificationTime(), ordinal, 
@@ -387,6 +392,7 @@ typename File<A>::MemberState& File<A>::makeObjectFileForMember(const Entry* mem
 			_instantiatedEntries[member] = state;
 			return _instantiatedEntries[member];
 		}
+#endif
 			
 		throwf("archive member '%s' with length %d is not mach-o or llvm bitcode", memberName, member->contentSize());
 	}

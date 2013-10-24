@@ -1326,6 +1326,7 @@ void Resolver::linkTimeOptimize()
 	if ( ! _haveLLVMObjs )
 		return;
 
+#if defined(__MACH__)
 	// run LLVM lto code-gen
 	lto::OptimizeOptions optOpt;
 	optOpt.outputFilePath				= _options.outputFilePath();
@@ -1408,6 +1409,7 @@ void Resolver::linkTimeOptimize()
 		// check new code does not override some dylib
 		this->checkDylibSymbolCollisions();
 	}
+#endif
 }
 
 
