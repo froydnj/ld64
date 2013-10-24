@@ -755,6 +755,9 @@ int main(int argc, const char* argv[])
 
 
 #ifndef NDEBUG
+#if defined(__cplusplus)
+extern "C" {
+#endif
 // implement assert() function to print out a backtrace before aborting
 void __assert_rtn(const char* func, const char* file, int line, const char* failedexpr)
 {
@@ -788,6 +791,9 @@ void __assert_rtn(const char* func, const char* file, int line, const char* fail
 	fprintf(stderr, "ld: Assertion failed: (%s), function %s, file %s, line %d.\n", failedexpr, func, file, line);
 	exit(1);
 }
+#if defined(__cplusplus)
+}
+#endif
 #endif
 
 
