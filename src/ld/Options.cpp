@@ -4378,6 +4378,7 @@ void Options::gotoClassicLinker(int argc, const char* argv[])
 			break;
 		}
 	}
+#if defined(__MACH__)
 	char rawPath[PATH_MAX];
 	char path[PATH_MAX];
 	uint32_t bufSize = PATH_MAX;
@@ -4391,6 +4392,7 @@ void Options::gotoClassicLinker(int argc, const char* argv[])
 			}
 		}
 	}
+#endif
 	// in case of error in above, try searching for ld_classic via PATH
 	execvp(argv[0], (char**)argv);
 	fprintf(stderr, "can't exec ld_classic\n");
