@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
+#include <sys/param.h>
 #include <sys/sysctl.h>
 #include <fcntl.h>
 #include <errno.h>
