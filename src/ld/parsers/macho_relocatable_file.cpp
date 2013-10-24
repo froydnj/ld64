@@ -1060,8 +1060,13 @@ private:
 	void											makeSortedSymbolsArray(uint32_t symArray[], const uint32_t sectionArray[]);
 	void											makeSortedSectionsArray(uint32_t array[]);
 	static int										pointerSorter(const void* l, const void* r);
+#if defined(__MACH__)
 	static int										symbolIndexSorter(void* extra, const void* l, const void* r);
 	static int										sectionIndexSorter(void* extra, const void* l, const void* r);
+#else
+	static int										symbolIndexSorter(const void* l, const void* r, void* extra);
+	static int										sectionIndexSorter(const void* l, const void* r, void* extra);
+#endif
 
 	void											parseDebugInfo();
 	void											parseStabs();
@@ -1828,7 +1833,11 @@ void Parser<A>::prescanSymbolTable()
 }
 
 template <typename A>
+#if defined(__MACH__)
 int Parser<A>::sectionIndexSorter(void* extra, const void* l, const void* r)
+#else
+int Parser<A>::sectionIndexSorter(const void* l, const void* r, void* extra)
+#endif
 {
 	Parser<A>* parser = (Parser<A>*)extra;
 	const uint32_t* left = (uint32_t*)l;
@@ -1871,7 +1880,11 @@ void Parser<A>::makeSortedSectionsArray(uint32_t array[])
 	// sort by symbol table address
 	for (uint32_t i=0; i < _machOSectionsCount; ++i)
 		array[i] = i;
+#if defined(__MACH__)
 	::qsort_r(array, _machOSectionsCount, sizeof(uint32_t), this, &sectionIndexSorter);
+#else
+	::qsort_r(array, _machOSectionsCount, sizeof(uint32_t), sectionIndexSorter, this);
+#endif
 
 	if ( log ) {
 		fprintf(stderr, "sorted sections:\n");
@@ -1883,7 +1896,11 @@ void Parser<A>::makeSortedSectionsArray(uint32_t array[])
 
 
 template <typename A>
+#if defined(__MACH__)
 int Parser<A>::symbolIndexSorter(void* extra, const void* l, const void* r)
+#else
+int Parser<A>::symbolIndexSorter(const void* l, const void* r, void* extra)
+#endif
 {
 	ParserAndSectionsArray* extraInfo = (ParserAndSectionsArray*)extra;
 	Parser<A>* parser = extraInfo->parser;
@@ -1964,7 +1981,11 @@ void Parser<A>::makeSortedSymbolsArray(uint32_t array[], const uint32_t sectionA
 	
 	// sort by symbol table address
 	ParserAndSectionsArray extra = { this, sectionArray };
+#if defined(__MACH__)
 	::qsort_r(array, _symbolsInSections, sizeof(uint32_t), &extra, &symbolIndexSorter);
+#else
+	::qsort_r(array, _symbolsInSections, sizeof(uint32_t), &symbolIndexSorter, &extra);
+#endif
 
 	
 	// look for two symbols at same address
