@@ -35,7 +35,7 @@
 #include <dlfcn.h>
 #include <mach-o/loader.h>
 #include <mach-o/getsect.h>
-#include <mach-o/dyld_priv.h>
+#include <mach-o/dyld.h>
 #include <mach/i386/thread_status.h>
 #include <Availability.h>
 
@@ -45,6 +45,30 @@
 #include "dwarf2.h"
 #include "strlcpycat.h"
 
+// Constants from the xnu headers.
+#define DICE_KIND_DATA				0x0001
+#define DICE_KIND_JUMP_TABLE8		0x0002
+#define DICE_KIND_JUMP_TABLE16		0x0003
+#define DICE_KIND_JUMP_TABLE32		0x0004
+#define DICE_KIND_ABS_JUMP_TABLE32	0x0005
+
+// From the dyld headers.
+struct dyld_unwind_sections {
+	const struct mach_header* mh;
+	const void *dwarf_section;
+	uintptr_t dwarf_section_length;
+	const void *compact_unwind_section;
+	uintptr_t compact_unwind_section_length;
+};
+
+#if __cplusplus
+extern "C" {
+#endif
+extern bool _dyld_find_unwind_sections(void *addr,
+									   struct dyld_unwind_sections *info);
+#if __cplusplus
+}
+#endif
 
 #if 0
 #if __i386__ || __x86_64__ 
