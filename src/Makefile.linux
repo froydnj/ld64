@@ -1,0 +1,114 @@
+NULL =
+
+CC := gcc
+CXX := g++
+
+CFILES_src_ld := ld/debugline.c
+
+CXXFILES_src_ld_code_sign_blobs := ld/code-sign-blobs/blob.cpp
+
+CXXFILES_src_ld := \
+  ld/InputFiles.cpp \
+  ld/ld.cpp \
+  ld/Options.cpp \
+  $(echo ld/OutputFile.cpp needs crypto bits) \
+  ld/Resolver.cpp \
+  $(echo ld/Snapshot.cpp unused due to blocks) \
+  ld/SymbolTable.cpp \
+  $(NULL)
+
+CXXFILES_src_ld_passes := \
+  ld/passes/branch_island.cpp \
+  ld/passes/branch_shim.cpp \
+  ld/passes/compact_unwind.cpp \
+  ld/passes/dylibs.cpp \
+  ld/passes/got.cpp \
+  ld/passes/huge.cpp \
+  ld/passes/objc.cpp \
+  ld/passes/order.cpp \
+  ld/passes/tlvp.cpp \
+  $(NULL)
+
+CXXFILES_src_ld_passes_stubs = ld/passes/stubs/stubs.cpp
+
+CXXFILES_src_ld_parsers := \
+  ld/parsers/archive_file.cpp \
+  $(echo ld/parsers/lto_file.cpp requires llvm-c)\
+  ld/parsers/macho_dylib_file.cpp \
+  ld/parsers/macho_relocatable_file.cpp \
+  ld/parsers/opaque_section_file.cpp \
+  $(NULL)
+
+CFILES_src_linux_compat := \
+  linux-compat/clock.c \
+  linux-compat/strlcat.c \
+  linux-compat/strlcpy.c \
+  $(NULL)
+
+CXXFILES_src_other := \
+  $(echo other/dyldinfo.cpp is a separate program ) \
+  $(echo other/machochecker.cpp is a separate program) \
+  $(echo other/ObjectDump.cpp is a separate program) \
+  $(echo other/PruneTrie.cpp appears to be unused) \
+  $(echo other/rebase.cpp is a separate program) \
+  $(echo other/unwinddump.cpp is a separate program) \
+  $(NULL)
+
+CFILES_ld := \
+  $(CFILES_src_ld) \
+  $(CFILES_src_linux_compat) \
+  $(NULL)
+
+CXXFILES_ld := \
+  $(CXXFILES_src_ld_code_sign_blobs) \
+  $(CXXFILES_src_ld) \
+  $(CXXFILES_src_ld_passes) \
+  $(CXXFILES_src_ld_passes_stubs) \
+  $(CXXFILES_src_ld_parsers) \
+  $(CXXFILES_src_other) \
+  $(NULL)
+
+OBJS_ld := $(CFILES_ld:.c=.o) $(CXXFILES_ld:.cpp=.o)
+
+SRCS_rebase = rebase.cpp
+CCOBJS_rebase = $(CCFILES_rebase:.cpp=.o)
+
+CROSS_USR_INCLUDE := /home/froydnj/src/usr_include_maker/usr_include
+
+INCLUDE_DIRS := \
+  abstraction \
+  ld \
+  ld/parsers \
+  ld/parsers/libunwind \
+  ld/passes \
+  ld/passes/stubs \
+  linux-compat \
+  other \
+  $(NULL)
+
+XCFLAGS := -D__LITTLE_ENDIAN__ -I$(CROSS_USR_INCLUDE) -I. \
+  $(foreach d,$(INCLUDE_DIRS),-I$(d))
+
+CFLAGS := -fmax-errors=2 -Wno-deprecated-declarations -Wno-format \
+  -D_POSIX_SOURCE -D_GNU_SOURCE
+
+CXXFLAGS := $(CFLAGS) -std=c++0x
+
+all: ld64 rebase
+
+ld64: $(OBJS_ld)
+	$(CXX) -o $@ $^ -pthread
+
+rebase: $(CCOBJS_rebase)
+	$(CXX) -o $@ $^
+
+.c.o:
+	$(CC) $(CFLAGS) $(XCFLAGS) -c -o $@ $<
+
+.cpp.o:
+	$(CXX) $(CXXFLAGS) $(XCFLAGS) -c -o $@ $<
+
+clean:
+	-rm -rf \
+	  ld64 $(COBJS_ld64) $(CCOBJS_ld64) \
+	  rebase $(CCOBJS_rebase)
