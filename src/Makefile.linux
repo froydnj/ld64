@@ -91,7 +91,7 @@ XCFLAGS := -D__LITTLE_ENDIAN__ -I$(CROSS_USR_INCLUDE) -I. \
   $(foreach d,$(INCLUDE_DIRS),-I$(d))
 
 CFLAGS := -fmax-errors=2 -Wno-deprecated-declarations -Wno-format \
-  -D_POSIX_SOURCE -D_GNU_SOURCE
+  -D_POSIX_SOURCE -D_GNU_SOURCE -D__DARWIN_UNIX03
 
 CXXFLAGS := $(CFLAGS) -std=c++0x
 
