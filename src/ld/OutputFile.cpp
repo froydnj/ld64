@@ -1693,6 +1693,9 @@ void OutputFile::writeOutputFile(ld::Internal& state)
 	if ( stat(_options.outputFilePath(), &stat_buf) != -1 ) {
 		if (stat_buf.st_mode & S_IFREG) {
 			outputIsRegularFile = true;
+#if !defined(__MACH__)
+			outputIsMappableFile = true;
+#else
 			// <rdar://problem/12264302> Don't use mmap on non-hfs volumes
 			struct statfs fsInfo;
 			if ( statfs(_options.outputFilePath(), &fsInfo) != -1 ) {
@@ -1704,6 +1707,7 @@ void OutputFile::writeOutputFile(ld::Internal& state)
 			else {
 				outputIsMappableFile = false;
 			}
+#endif
 		} 
 		else {
 			outputIsRegularFile = false;
@@ -1718,12 +1722,16 @@ void OutputFile::writeOutputFile(ld::Internal& state)
 		char* end = strrchr(dirPath, '/');
 		if ( end != NULL ) {
 			end[1] = '\0';
+#if !defined(__MACH__)
+			outputIsMappableFile = true;
+#else
 			struct statfs fsInfo;
 			if ( statfs(dirPath, &fsInfo) != -1 ) {
 				if ( strcmp(fsInfo.f_fstypename, "hfs") == 0) {
 					outputIsMappableFile = true;
 				}
 			}
+#endif
 		}
 	}
 	
