@@ -713,7 +713,7 @@ InputFiles::InputFiles(Options& opts, const char** archName)
 #endif
 	}
 	
-#if HAVE_PTHREADS
+#if defined(__MACH__)
 	_remainingInputFiles = files.size();
 	
 	// initialize info for parsing input files on worker threads
