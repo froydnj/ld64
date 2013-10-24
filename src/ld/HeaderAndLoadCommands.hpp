@@ -35,6 +35,7 @@
 #include "MachOFileAbstraction.hpp"
 #include "Options.h"
 #include "ld.hpp"
+#include "strlcpycat.h"
 
 namespace ld {
 namespace tool {
