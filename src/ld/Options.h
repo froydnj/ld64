@@ -329,7 +329,9 @@ public:
 	bool						forceNotWeak(const char* symbolName) const;
 	bool						forceWeakNonWildCard(const char* symbolName) const;
 	bool						forceNotWeakNonWildcard(const char* symbolName) const;
+#if defined(__MACH__)
     Snapshot&                   snapshot() const { return fLinkSnapshot; }
+#endif
 	bool						errorBecauseOfWarnings() const;
 	bool						needsThreadLoadCommand() const { return fNeedsThreadLoadCommand; }
 	bool						needsEntryPointLoadCommand() const { return fEntryPointLoadCommand; }
@@ -583,7 +585,9 @@ private:
 	std::vector<const char*>			fSDKPaths;
 	std::vector<const char*>			fDyldEnvironExtras;
 	bool								fSaveTempFiles;
+#if defined(__MACH__)
     mutable Snapshot                  fLinkSnapshot;
+#endif
     bool                              fSnapshotRequested;
     const char *                      fPipelineFifo;
 };

@@ -8,6 +8,7 @@
 
 #ifndef ld64_Snapshot_h
 #define ld64_Snapshot_h
+#if defined(__MACH__)
 #include <stdint.h>
 #include <string.h>
 #include <map>
@@ -150,4 +151,5 @@ private:
     StringVector *fCopiedArchives;  // vector of .a files that have been copied to the snapshot
 };
 
+#endif /* __MACH__ */
 #endif

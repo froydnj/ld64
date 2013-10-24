@@ -983,12 +983,14 @@ void InputFiles::forEachInitialAtom(ld::File::AtomHandler& handler)
 #endif
 		const Options::FileInfo& info = files[fileIndex];
 		switch (file->type()) {
+#if defined(__MACH__)
 			case ld::File::Reloc:
 			{
 				ld::relocatable::File* reloc = (ld::relocatable::File*)file;
 				_options.snapshot().recordObjectFile(reloc->path());
 			}
 				break;
+#endif
 			case ld::File::Dylib:
 			{
 				ld::dylib::File* dylib = (ld::dylib::File*)file;
@@ -1080,7 +1082,9 @@ bool InputFiles::searchLibraries(const char* name, bool searchDylibs, bool searc
                 if ( dylibFile->justInTimeforEachAtom(name, handler) ) {
                     // we found a definition in this dylib
                     // done, unless it is a weak definition in which case we keep searching
+#if defined(__MACH__)
                     _options.snapshot().recordDylibSymbol(dylibFile, name);
+#endif
                     if ( !dylibFile->hasWeakExternals() || !dylibFile->hasWeakDefinition(name)) {
                         return true;
                     }
@@ -1094,7 +1098,9 @@ bool InputFiles::searchLibraries(const char* name, bool searchDylibs, bool searc
                     if ( archiveFile->justInTimeDataOnlyforEachAtom(name, handler) ) {
                         if ( _options.traceArchives() ) 
                             logArchive(archiveFile);
+#if defined(__MACH__)
                         _options.snapshot().recordArchive(archiveFile->path());
+#endif
                         // found data definition in static library, done
                         return true;
                     }
@@ -1103,7 +1109,9 @@ bool InputFiles::searchLibraries(const char* name, bool searchDylibs, bool searc
                     if ( archiveFile->justInTimeforEachAtom(name, handler) ) {
                         if ( _options.traceArchives() ) 
                             logArchive(archiveFile);
+#if defined(__MACH__)
                         _options.snapshot().recordArchive(archiveFile->path());
+#endif
                         // found definition in static library, done
                         return true;
                     }
@@ -1130,7 +1138,9 @@ bool InputFiles::searchLibraries(const char* name, bool searchDylibs, bool searc
 				if ( dylibFile->justInTimeforEachAtom(name, handler) ) {
 					// we found a definition in this dylib
 					// done, unless it is a weak definition in which case we keep searching
+#if defined(__MACH__)
                     _options.snapshot().recordDylibSymbol(dylibFile, name);
+#endif
 					if ( !dylibFile->hasWeakExternals() || !dylibFile->hasWeakDefinition(name)) {
 						return true;
                     }

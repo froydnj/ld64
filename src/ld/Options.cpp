@@ -554,7 +554,9 @@ void Options::setArchitecture(cpu_type_t type, cpu_subtype_t subtype)
 						fMakeCompressedDyldInfo = true;
 					break;
 			}
+#if defined(__MACH__)
 			fLinkSnapshot.recordArch(fArchitectureName);
+#endif
 			return;
 		}
 	}
@@ -1730,8 +1732,10 @@ void Options::warnObsolete(const char* arg)
 //
 void Options::parse(int argc, const char* argv[])
 {
+#if defined(__MACH__)
     // Store the original args in the link snapshot.
     fLinkSnapshot.recordRawArgs(argc, argv);
+#endif
     
 	// pass one builds search list from -L and -F options
 	this->buildSearchPaths(argc, argv);
@@ -1800,11 +1804,13 @@ void Options::parse(int argc, const char* argv[])
 			else if ( strcmp(arg, "-kext") == 0 ) {
 				fOutputKind = kKextBundle;
 			}
+#if defined(__MACH__)
 			else if ( strcmp(arg, "-o") == 0 ) {
                 snapshotArgCount = 0;
 				fOutputFile = argv[++i];
                 fLinkSnapshot.setSnapshotName(fOutputFile);
 			}
+#endif
 			else if ( strncmp(arg, "-lazy-l", 7) == 0 ) {
                 snapshotArgCount = 0;
 				FileInfo info = findLibrary(&arg[7], true);
@@ -2758,10 +2764,12 @@ void Options::parse(int argc, const char* argv[])
 			else if ( strcmp(arg, "-page_align_data_atoms") == 0 ) {
 				fPageAlignDataAtoms = true;
 			} 
+#if defined(__MACH__)
 			else if (strcmp(arg, "-debug_snapshot") == 0) {
                 fLinkSnapshot.setSnapshotMode(Snapshot::SNAPSHOT_DEBUG);
                 fSnapshotRequested = true;
             }
+#endif
 			else if ( strcmp(arg, "-new_main") == 0 ) {
 				fEntryPointLoadCommandForceOn = true;
 			}
@@ -2798,11 +2806,13 @@ void Options::parse(int argc, const char* argv[])
 			else {
 				throwf("unknown option: %s", arg);
 			}
-            
+
+#if defined(__MACH__)            
             if (snapshotArgCount == -1)
                 snapshotArgCount = i-snapshotArgIndex+1;
             if (snapshotArgCount > 0)
                 fLinkSnapshot.addSnapshotLinkArg(snapshotArgIndex, snapshotArgCount, snapshotFileArgIndex);
+#endif
 		}
 		else {
 			FileInfo info = findFile(arg);
@@ -2820,9 +2830,11 @@ void Options::parse(int argc, const char* argv[])
 		info.ordinal = ld::File::Ordinal::makeArgOrdinal((uint16_t)argc);
 		addLibrary(info);
 	}
-    
+
+#if defined(__MACH__)    
     if (fSnapshotRequested)
         fLinkSnapshot.createSnapshot();
+#endif
 }
 
 
@@ -3078,7 +3090,8 @@ void Options::parsePreCommandLineEnvironmentSettings()
 	const char* customDyldPath = getenv("LD_DYLD_PATH");
 	if ( customDyldPath != NULL ) 
 		fDyldInstallPath = customDyldPath;
-    
+
+#if defined(__MACH__)    
     const char* debugArchivePath = getenv("LD_DEBUG_SNAPSHOT");
     if (debugArchivePath != NULL) {
         fLinkSnapshot.setSnapshotMode(Snapshot::SNAPSHOT_DEBUG);
@@ -3086,6 +3099,7 @@ void Options::parsePreCommandLineEnvironmentSettings()
             fLinkSnapshot.setSnapshotPath(debugArchivePath);
         fSnapshotRequested = true;
     }
+#endif
 
     const char* pipeFdString = getenv("LD_PIPELINE_FIFO");
     if (pipeFdString != NULL) {
@@ -3854,7 +3868,9 @@ void Options::checkIllegalOptionCombinations()
 			if ( strcmp(&lastSlash[1], subUmbrella) == 0 ) {
 				info.options.fReExport = true;
 				found = true;
+#if defined(__MACH__)
                 fLinkSnapshot.recordSubUmbrella(info.path);
+#endif
 				break;
 			}
 		}
@@ -3877,7 +3893,9 @@ void Options::checkIllegalOptionCombinations()
 			if ( strncmp(&lastSlash[1], subLibrary, dot-lastSlash-1) == 0 ) {
 				info.options.fReExport = true;
 				found = true;
+#if defined(__MACH__)
                 fLinkSnapshot.recordSubLibrary(info.path);
+#endif
 				break;
 			}
 		}
