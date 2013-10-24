@@ -11,7 +11,7 @@ CXXFILES_src_ld := \
   ld/InputFiles.cpp \
   ld/ld.cpp \
   ld/Options.cpp \
-  $(echo ld/OutputFile.cpp needs crypto bits) \
+  ld/OutputFile.cpp \
   ld/Resolver.cpp \
   $(echo ld/Snapshot.cpp unused due to blocks) \
   ld/SymbolTable.cpp \
