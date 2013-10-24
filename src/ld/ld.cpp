@@ -585,6 +585,7 @@ static char* commatize(uint64_t in, char* out)
 
 static void printTime(const char* msg, uint64_t partTime, uint64_t totalTime)
 {
+#if defined(__MACH__)
 	static uint64_t sUnitsPerSecond = 0;
 	if ( sUnitsPerSecond == 0 ) {
 		struct mach_timebase_info timeBaseInfo;
@@ -607,6 +608,7 @@ static void printTime(const char* msg, uint64_t partTime, uint64_t totalTime)
 		uint32_t percent = percentTimesTen/10;
 		fprintf(stderr, "%24s: % 4d.%d seconds (% 4d.%d%%)\n", msg, seconds, secondsTimeTen-seconds*10, percent, percentTimesTen-percent*10);
 	}
+#endif
 }
 
 
