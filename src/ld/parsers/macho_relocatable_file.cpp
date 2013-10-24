@@ -47,6 +47,7 @@
 #include "debugline.h"
 
 #include "Architectures.hpp"
+#include "DwarfInstructions.hpp"
 #include "ld.hpp"
 #include "macho_relocatable_file.h"
 
