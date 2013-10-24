@@ -52,7 +52,7 @@
 #include <algorithm>
 #include <unordered_set>
 
-#include <CommonCrypto/CommonDigest.h>
+#include "md5.h"
 #include <AvailabilityMacros.h>
 
 #include "MachOTrie.hpp"
@@ -1615,7 +1615,7 @@ void OutputFile::computeContentUUID(ld::Internal& state, uint8_t* wholeBuffer)
 {
 	const bool log = false;
 	if ( (_options.outputKind() != Options::kObjectFile) || state.someObjectFileHasDwarf ) {
-		uint8_t digest[CC_MD5_DIGEST_LENGTH];
+		uint8_t digest[MD5_DIGEST_LENGTH];
 		uint32_t	stabsStringsOffsetStart;
 		uint32_t	tabsStringsOffsetEnd;
 		uint32_t	stabsOffsetStart;
@@ -1643,23 +1643,24 @@ void OutputFile::computeContentUUID(ld::Internal& state, uint8_t* wholeBuffer)
 			if ( log ) fprintf(stderr, "lastStabStringFileOffset=0x%08llX\n", lastStabStringFileOffset);
 			assert(firstStabNlistFileOffset <= firstStabStringFileOffset);
 			
-			CC_MD5_CTX md5state;
-			CC_MD5_Init(&md5state);
+			MD5_CTX md5state;
+			MD5Init(&md5state);
 			// checksum everything up to first stabs nlist
 			if ( log ) fprintf(stderr, "checksum 0x%08X -> 0x%08llX\n", 0, firstStabNlistFileOffset);
-			CC_MD5_Update(&md5state, &wholeBuffer[0], firstStabNlistFileOffset);
+			MD5Update(&md5state, &wholeBuffer[0], firstStabNlistFileOffset);
 			// checkusm everything after last stabs nlist and up to first stabs string
 			if ( log ) fprintf(stderr, "checksum 0x%08llX -> 0x%08llX\n", lastStabNlistFileOffset, firstStabStringFileOffset);
-			CC_MD5_Update(&md5state, &wholeBuffer[lastStabNlistFileOffset], firstStabStringFileOffset-lastStabNlistFileOffset);
+			MD5Update(&md5state, &wholeBuffer[lastStabNlistFileOffset], firstStabStringFileOffset-lastStabNlistFileOffset);
 			// checksum everything after last stabs string to end of file
 			if ( log ) fprintf(stderr, "checksum 0x%08llX -> 0x%08llX\n", lastStabStringFileOffset, _fileSize);
-			CC_MD5_Update(&md5state, &wholeBuffer[lastStabStringFileOffset], _fileSize-lastStabStringFileOffset);
-			CC_MD5_Final(digest, &md5state);
+			MD5Update(&md5state, &wholeBuffer[lastStabStringFileOffset], _fileSize-lastStabStringFileOffset);
+			MD5Final(&md5state);
+			memcpy(digest, md5state.digest, MD5_DIGEST_LENGTH);
 			if ( log ) fprintf(stderr, "uuid=%02X, %02X, %02X, %02X, %02X, %02X, %02X, %02X\n", digest[0], digest[1], digest[2], 
 							   digest[3], digest[4], digest[5], digest[6],  digest[7]);
 		}
 		else {
-			CC_MD5(wholeBuffer, _fileSize, digest);
+			MD5Buffer(wholeBuffer, _fileSize, digest);
 		}
 		// <rdar://problem/6723729> LC_UUID uuids should conform to RFC 4122 UUID version 4 & UUID version 5 formats
 		digest[6] = ( digest[6] & 0x0F ) | ( 3 << 4 );
