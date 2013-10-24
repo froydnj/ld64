@@ -30,6 +30,8 @@
 #include <math.h>
 #include <unistd.h>
 #include <assert.h>
+#include <time.h>
+#include <string.h>
 
 #include <vector>
 #include <set>
