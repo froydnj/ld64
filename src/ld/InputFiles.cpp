@@ -42,6 +42,7 @@
 #include <mach-o/fat.h>
 #include <sys/sysctl.h>
 #include <libkern/OSAtomic.h>
+#include <unistd.h>
 
 #include <string>
 #include <map>
@@ -722,18 +723,15 @@ InputFiles::InputFiles(Options& opts, const char** archName)
 #endif
 	}
 	
-#if defined(__MACH__)
+#if HAVE_PTHREADS
 	_remainingInputFiles = files.size();
 	
 	// initialize info for parsing input files on worker threads
-	unsigned int ncpus;
-	int mib[2];
-	size_t len = sizeof(ncpus);
-	mib[0] = CTL_HW;
-	mib[1] = HW_NCPU;
-	if (sysctl(mib, 2, &ncpus, &len, NULL, 0) != 0) {
-		ncpus = 1;
+	long ncpus_sysconf = sysconf(_SC_NPROCESSORS_CONF);
+	if (ncpus_sysconf < 1) {
+		ncpus_sysconf = 1;
 	}
+	unsigned int ncpus = (unsigned int)ncpus_sysconf;
 	_availableWorkers = MIN(ncpus, files.size()); // max # workers we permit
 	_idleWorkers = 0;
 	
