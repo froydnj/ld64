@@ -991,14 +991,14 @@ void InputFiles::forEachInitialAtom(ld::File::AtomHandler& handler)
 #endif
 		const Options::FileInfo& info = files[fileIndex];
 		switch (file->type()) {
-#if defined(__MACH__)
 			case ld::File::Reloc:
+#if defined(__MACH__)
 			{
 				ld::relocatable::File* reloc = (ld::relocatable::File*)file;
 				_options.snapshot().recordObjectFile(reloc->path());
 			}
-				break;
 #endif
+				break;
 			case ld::File::Dylib:
 			{
 				ld::dylib::File* dylib = (ld::dylib::File*)file;
