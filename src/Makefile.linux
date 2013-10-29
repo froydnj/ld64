@@ -111,5 +111,5 @@ rebase: $(CCOBJS_rebase)
 
 clean:
 	-rm -rf \
-	  ld64 $(COBJS_ld64) $(CCOBJS_ld64) \
+	  ld64 $(OBJS_ld) \
 	  rebase $(CCOBJS_rebase)
