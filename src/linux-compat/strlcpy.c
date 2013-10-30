@@ -35,7 +35,7 @@ strlcpy(char* dst, const char* src, size_t sz)
 
   /* Not enough room in dst, add NUL and traverse rest of src */
   if (n == 0) {
-    if (siz != 0)
+    if (sz != 0)
       *d = '\0';		/* NUL-terminate dst */
     while (*s++)
       ;
