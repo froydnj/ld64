@@ -509,14 +509,12 @@ void File<A>::buildExportHashTableFromSymbolTable(const macho_dysymtab_command<P
 		if ( _s_logHashtable ) fprintf(stderr, "ld: building hashtable of %u toc entries for %s\n", dynamicInfo->nextdefsym(), this->path());
 		const macho_nlist<P>* start = &symbolTable[dynamicInfo->iextdefsym()];
 		const macho_nlist<P>* end = &start[dynamicInfo->nextdefsym()];
-		_atoms.reserve(dynamicInfo->nextdefsym()); // set initial bucket count
 		for (const macho_nlist<P>* sym=start; sym < end; ++sym) {
 			this->addSymbol(&strings[sym->n_strx()], (sym->n_desc() & N_WEAK_DEF) != 0, false, sym->n_value());
 		}
 	}
 	else {
 		int32_t count = dynamicInfo->ntoc();
-		_atoms.reserve(count); // set initial bucket count
 		if ( _s_logHashtable ) fprintf(stderr, "ld: building hashtable of %u entries for %s\n", count, this->path());
 		const struct dylib_table_of_contents* toc = (dylib_table_of_contents*)(fileContent + dynamicInfo->tocoff());
 		for (int32_t i = 0; i < count; ++i) {
